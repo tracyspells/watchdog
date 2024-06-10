@@ -6,9 +6,10 @@ type Entity = {
 
 type ObserveTable = { [Entity]: Callback }
 
-type ValueObject = {
+type ValueObject = Instance & {
 	Value: any,
 	Changed: RBXScriptSignal<any>,
+	GetPropertyChangedSignal: (self: ValueObject, string) -> RBXScriptSignal,
 }
 
 type WatchdogObject = {
@@ -91,20 +92,30 @@ local function new()
 end
 
 local function fromValueObject(valueObject: ValueObject, subject: Callback)
-	local connection: RBXScriptConnection
+	local connections: { RBXScriptConnection } = {}
 	local watchdog = new()
 	
 	local function stopObserving()
-		connection:Disconnect()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+
+		connections = {}
+
 		watchdog:Sleep()
 	end
 
 	watchdog:Observe(subject)
+
 	watchdog:Bark(valueObject.Value)
 
-	connection = valueObject.Changed:Connect(function(newValue)
-		watchdog:Bark(newValue)
-	end)
+	table.insert(connections, valueObject:GetPropertyChangedSignal("Value"):Connect(function()
+		watchdog:Bark(valueObject.Value)
+	end))
+
+	table.insert(connections, valueObject.Destroying:Connect(function()
+		stopObserving()
+	end))
 
 	return stopObserving 
 end
