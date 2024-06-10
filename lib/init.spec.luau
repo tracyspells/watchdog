@@ -91,4 +91,23 @@ return function()
 			expect(sleepCount).to.equal(1)
 		end)
 	end)
+
+	describe("fromValueObject", function() 
+		it("shouldn't keep observing after being told to stop", function()
+			local number = Instance.new("IntValue")
+			local updatedCount = 0
+
+			local stopObserving = Watchdog.fromValueObject(number, function()
+				updatedCount += 1
+			end)
+
+			number.Value += 1
+			number.Value += 1
+			number.Value += 1
+			stopObserving()
+			number.Value += 1
+
+			expect(updatedCount).to.equal(4)
+		end)
+	end)
 end
