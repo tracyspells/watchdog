@@ -1,4 +1,5 @@
 type Callback = (...any?) -> ()
+
 type Entity = {
 	getScared: Callback,
 	getsScaredOnce: boolean?,
@@ -119,7 +120,6 @@ local function fromValueObject(valueObject: ValueObject, subject: Callback)
 
 	return stopObserving 
 end
-
 
 
 return table.freeze {
