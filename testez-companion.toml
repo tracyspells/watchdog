@@ -1,0 +1,4 @@
+roots = ["ReplicatedStorage/Packages/Watchdog"]
+
+[extraOptions]
+runTestsOnSave = true

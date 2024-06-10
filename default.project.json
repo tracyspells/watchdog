@@ -1,0 +1,6 @@
+{
+  "name": "watchdog",
+  "tree": {
+        "$path": "lib"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "[luau]": {
+        "editor.defaultFormatter": "JohnnyMorganz.stylua",
+        "editor.formatOnSave": true,
+    },
+
+    "[lua]": {
+        "editor.defaultFormatter": "JohnnyMorganz.stylua",
+        "editor.formatOnSave": true,
+    },
+
+    "luau-lsp.types.definitionFiles": [
+        "test/testez.d.luau"
+    ]
+}
