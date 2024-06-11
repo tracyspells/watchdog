@@ -10,6 +10,6 @@
     },
 
     "luau-lsp.types.definitionFiles": [
-        "test/testez.d.luau"
+        "test/testez.d.luau",
     ]
 }
