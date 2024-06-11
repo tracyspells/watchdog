@@ -4,7 +4,7 @@ local Watchdog = require(script.Parent)
 
 return function()
 	describe("Watchdog.new()", function()
-		local watchdog 
+		local watchdog
 
 		beforeEach(function()
 			watchdog = Watchdog.new()
@@ -54,7 +54,7 @@ return function()
 			expect(salivaContents[5]).to.equal(false)
 		end)
 
-		it("shouldn't bark at non-subjects", function() 
+		it("shouldn't bark at non-subjects", function()
 			local wasGuyAScared = false
 			local wasGirlBScared = false
 			local wasBabyCScared = false
@@ -82,7 +82,7 @@ return function()
 			local sleepCount = 0
 			watchdog:Observe(function()
 				sleepCount += 1
-			end) 
+			end)
 
 			watchdog:Bark()
 			watchdog:Sleep()
@@ -92,7 +92,7 @@ return function()
 		end)
 	end)
 
-	describe("fromValueObject", function() 
+	describe("fromValueObject", function()
 		it("shouldn't keep observing after being told to stop", function()
 			local number = Instance.new("IntValue")
 			local updatedCount = 0
