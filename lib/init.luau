@@ -116,12 +116,7 @@ local function fromValueObject(valueObject: ValueObject, subject: Callback)
 		end)
 	)
 
-	table.insert(
-		connections,
-		valueObject.Destroying:Connect(function()
-			stopObserving()
-		end)
-	)
+	table.insert(connections, valueObject.Destroying:Connect(stopObserving))
 
 	return stopObserving
 end
