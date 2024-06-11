@@ -25,7 +25,6 @@ export type Watchdog = {
 	fromValueObject: (valueObject: ValueObject, subject: Callback) -> Callback,
 }
 
-
 local function new()
 	local observing: ObserveTable = {}
 	local isSleeping = false
@@ -95,7 +94,7 @@ end
 local function fromValueObject(valueObject: ValueObject, subject: Callback)
 	local connections: { RBXScriptConnection } = {}
 	local watchdog = new()
-	
+
 	local function stopObserving()
 		for _, connection in connections do
 			connection:Disconnect()
@@ -110,20 +109,25 @@ local function fromValueObject(valueObject: ValueObject, subject: Callback)
 
 	watchdog:Bark(valueObject.Value)
 
-	table.insert(connections, valueObject:GetPropertyChangedSignal("Value"):Connect(function()
-		watchdog:Bark(valueObject.Value)
-	end))
+	table.insert(
+		connections,
+		valueObject:GetPropertyChangedSignal("Value"):Connect(function()
+			watchdog:Bark(valueObject.Value)
+		end)
+	)
 
-	table.insert(connections, valueObject.Destroying:Connect(function()
-		stopObserving()
-	end))
+	table.insert(
+		connections,
+		valueObject.Destroying:Connect(function()
+			stopObserving()
+		end)
+	)
 
-	return stopObserving 
+	return stopObserving
 end
 
-
-return table.freeze {
+return table.freeze({
 	new = new,
 
 	fromValueObject = fromValueObject,
-}
+})
