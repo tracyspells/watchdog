@@ -34,7 +34,7 @@ jobs:
             --defs=globalTypes.d.luau
             --base-luaurc=.luaurc 
             --sourcemap=sourcemap.json 
-            --settings=vscode/settings.json
+            --settings=.vscode/settings.json
             --ignore="**/_Index/**" 
             --no-strict-dm-types lib
 
