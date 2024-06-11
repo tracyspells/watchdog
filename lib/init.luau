@@ -126,4 +126,4 @@ return table.freeze {
 	new = new,
 
 	fromValueObject = fromValueObject,
-} :: Watchdog
+}
