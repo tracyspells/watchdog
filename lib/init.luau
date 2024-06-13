@@ -106,7 +106,6 @@ local function fromValueObject(valueObject: ValueObject, subject: Callback)
 	end
 
 	watchdog:Observe(subject)
-
 	watchdog:Bark(valueObject.Value)
 
 	table.insert(
@@ -123,6 +122,5 @@ end
 
 return table.freeze({
 	new = new,
-
 	fromValueObject = fromValueObject,
 })
