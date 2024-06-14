@@ -7,25 +7,20 @@ type Entity = {
 
 type ObserveTable = { [Entity]: Callback }
 
-type ValueObject = Instance & {
-	Value: any,
-	Changed: RBXScriptSignal<any>,
-	GetPropertyChangedSignal: (self: ValueObject, string) -> RBXScriptSignal,
-}
-
 type WatchdogObject = {
-	Observe: (self: WatchdogObject, subject: Callback) -> Callback?,
-	ObserveOnce: (self: WatchdogObject, subject: Callback) -> Callback?,
+	Observe: (self: WatchdogObject, subject: Callback) -> Callback,
+	ObserveOnce: (self: WatchdogObject, subject: Callback) -> Callback,
 	Bark: (self: WatchdogObject, ...any) -> (),
 	Sleep: (self: WatchdogObject) -> (),
 }
 
 export type Watchdog = {
 	new: () -> WatchdogObject,
-	fromValueObject: (valueObject: ValueObject, subject: Callback) -> Callback,
 }
 
-local function new()
+local Watchdog = {}
+
+function Watchdog.new(): WatchdogObject
 	local observing: ObserveTable = {}
 	local isSleeping = false
 
@@ -88,39 +83,7 @@ local function new()
 		isSleeping = true
 	end
 
-	return watchdog
+	return watchdog :: any
 end
 
-local function fromValueObject(valueObject: ValueObject, subject: Callback)
-	local connections: { RBXScriptConnection } = {}
-	local watchdog = new()
-
-	local function stopObserving()
-		for _, connection in connections do
-			connection:Disconnect()
-		end
-
-		connections = {}
-
-		watchdog:Sleep()
-	end
-
-	watchdog:Observe(subject)
-	watchdog:Bark(valueObject.Value)
-
-	table.insert(
-		connections,
-		valueObject:GetPropertyChangedSignal("Value"):Connect(function()
-			watchdog:Bark(valueObject.Value)
-		end)
-	)
-
-	table.insert(connections, valueObject.Destroying:Connect(stopObserving))
-
-	return stopObserving
-end
-
-return table.freeze({
-	new = new,
-	fromValueObject = fromValueObject,
-})
+return Watchdog
