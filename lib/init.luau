@@ -9,20 +9,16 @@ type Set<T> = { [T]: boolean }
 
 type Entities = Set<Entity>
 
-type WatchdogObject = {
-	Observe: (self: WatchdogObject, entity: Callback) -> Callback,
-	ObserveOnce: (self: WatchdogObject, entity: Callback) -> Callback,
-	Bark: (self: WatchdogObject, ...any) -> (),
-	Destroy: (self: WatchdogObject) -> (),
-}
-
 export type Watchdog = {
-	new: () -> WatchdogObject,
+	Observe: (self: Watchdog, entity: Callback) -> Callback,
+	ObserveOnce: (self: Watchdog, entity: Callback) -> Callback,
+	Bark: (self: Watchdog, ...any) -> (),
+	Destroy: (self: Watchdog) -> (),
 }
 
 local Watchdog = {}
 
-function Watchdog.new(): WatchdogObject
+function Watchdog.new(): Watchdog
 	local entitiesToObserve: Entities = {}
 
 	local watchdog = {}
@@ -79,4 +75,4 @@ function Watchdog.new(): WatchdogObject
 	return watchdog :: any
 end
 
-return Watchdog :: Watchdog
+return Watchdog
