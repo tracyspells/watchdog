@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove .spec files
+        run: rm -rf **/*.spec.luau
+
+      - name: Install Aftman
+        uses: ok-nick/setup-aftman@v0.4.2
+
+      - name: Install packages
+        run: wally install
+
+      - name: Publish Wally package
+        run: |
+          mkdir -p ~/.wally
+          echo "$WALLY_AUTH" > ~/.wally/auth.toml
+          wally publish
+        env:
+          WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
+
+      - name: Build package
+        run: rojo build --output watchdog.rbxm
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        if: ${{ github.event.release }}
+        with:
+          files: watchdog.rbxm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
