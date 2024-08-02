@@ -22,7 +22,7 @@ jobs:
         run: wally install
 
       - name: Generate sourcemap.json
-        run: rojo sourcemap test.project.json --output sourcemap.json
+        run: rojo sourcemap dev.project.json --output sourcemap.json
 
       - name: Download global Roblox types
         shell: bash
