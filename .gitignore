@@ -1,6 +1,11 @@
-/*.rbxlx.lock
-/*.rbxl.lock
-/*.rbxl
-/*.lock
+*.rbxm
+*.rbxmx
+*.rbxl
+*.rbxlx
+*.lock
 
-/DevPackages
+DevPackages
+
+sourcemap.json
+
+scripts/roblox.d.luau
