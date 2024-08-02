@@ -31,11 +31,11 @@ return function()
 		expect(observeCount).to.equal(1)
 	end)
 
-	it("should stop observing a subject", function() 
+	it("should stop observing a subject", function()
 		local hasStoppedObserving = false
 
 		local stopObserving
-		stopObserving = watchdog:Observe(function() 
+		stopObserving = watchdog:Observe(function()
 			if hasStoppedObserving then
 				return
 			end
@@ -43,13 +43,13 @@ return function()
 			hasStoppedObserving = true
 
 			stopObserving()
-		end) 
+		end)
 
 		expect(stopObserving).to.be.ok()
 		expect(stopObserving).to.be.a("function")
-		
+
 		watchdog:Bark()
-		
+
 		expect(hasStoppedObserving).to.equal(true)
 	end)
 
