@@ -3,7 +3,7 @@
 <p align = "center">Simple Observer pattern for Roblox.</p>
 </p>
 
-**Watchdog** is a simple, barebones Observer pattern that centers around [Signals](https://sleitnick.github.io/RbxUtil/api/Signal/).
+**Watchdog** is a simple, barebones Observer pattern that centers around the [Signal](https://sleitnick.github.io/RbxUtil/api/Signal/) pattern.
 
 Check out the examples to see what you can do with **Watchdog**!
 
@@ -32,17 +32,20 @@ local watchdog = Watchdog.new()
 A new `Watchdog` object.
 
 ---
-
 ### `Watchdog:Bark(...)`
+
+Alerts all entities that the Watchdog is observing with the arguments passed.
 
 
 ```lua
 watchdog:Bark("Hello! I'm Bob!")
+watchdog:Bark("How many pancakes do you want?")
+watchdog:Bark(5)
 ```
 
 #### Parameters
 
-- `...args`: Arguments to pass to the `:Observe()` and `:ObserveOnce()` `callback` function.
+- `...args`: Arguments to pass to the `:Observe()` and `:ObserveOnce()` `entity` function.
 
 #### Returns
 
@@ -50,19 +53,19 @@ watchdog:Bark("Hello! I'm Bob!")
 
 ---
 
-### `Watchdog:Observe(callback)`
+### `Watchdog:Observe(entity)`
+
+Observes an entity.
 
 ```lua
 local stopObserving = watchdog:Observe(function(message: string)
     print(message)
 end)
-
-watchdog:Bark("Hello world!")
 ```
 
 #### Parameters
 
-- `callback`: A function that will be called with the arguments you passed in `Bark()`.
+- `entity`: A function that will be called with the arguments you passed in `Bark()`.
 
 #### Returns
 
@@ -70,22 +73,19 @@ watchdog:Bark("Hello world!")
 
 ---
 
-### `Watchdog:ObserveOnce(callback)`
+### `Watchdog:ObserveOnce(entity)`
+
+Observes an entity that is only alerted once.
 
 ```lua
 local stopObserving = watchdog:ObserveOnce(function(message: string)
-    --This function will only be called once!
-
     print(message)
 end)
-
-watchdog:Bark("Hello world!")
-watchdog:Bark("Goodbye world!") -- Will not run
 ```
 
 #### Parameters
 
-- `callback`: A function that will be called with the arguments you passed in `Bark()`.
+- `entity`: A function that will be called with the arguments you passed in `Bark()`.
 
 #### Returns
 
@@ -95,7 +95,7 @@ watchdog:Bark("Goodbye world!") -- Will not run
 
 ### `Watchdog:Destroy()`
 
-Destroys the `Watchdog` object, cleaning up any connections.
+Destroys the `Watchdog` object.
 
 ```lua
 watchdog:Destroy()
