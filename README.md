@@ -5,8 +5,6 @@
 
 **Watchdog** is a simple, barebones Observer pattern that centers around the [Signal](https://sleitnick.github.io/RbxUtil/api/Signal/) pattern.
 
-Check out the examples to see what you can do with **Watchdog**!
-
 ---
 
 ## 📦 Installation
@@ -104,6 +102,43 @@ watchdog:Destroy()
 #### Returns
 
 `:Destroy()`  does not return anything.
+
+---
+
+## ⚙️ Example
+
+`observeProperty.luau`
+```lua
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Watchdog = require(ReplicatedStorage.Packages.Watchdog)
+
+type Callback = () -> ()
+type Watchdog = Watchdog.Watchdog
+
+local function observeProperty(instance: Instance, propertyName: string, callback: (value: any) -> ()): Callback
+	local watchdog: Watchdog = Watchdog.new()
+	
+	local connection: RBXScriptConnection
+	
+	local function onPropertyChanged()
+		watchdog:Bark((instance :: any)[propertyName])
+	end
+	
+	connection = instance:GetPropertyChangedSignal(propertyName):Connect(onPropertyChanged)
+	
+	watchdog:Observe(callback)
+	onPropertyChanged()
+	
+	return function()
+		connection:Disconnect()
+		watchdog:Destroy()
+	end
+end
+
+return observeProperty
+```
 
 ---
 
