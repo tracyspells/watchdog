@@ -5,13 +5,15 @@ type Entity = {
 	getsScaredOnce: boolean?,
 }
 
-type ObserveTable = { [Entity]: Callback }
+type Set<T> = { [T]: boolean }
+
+type Entities = Set<Entity>
 
 type WatchdogObject = {
 	Observe: (self: WatchdogObject, subject: Callback) -> Callback,
 	ObserveOnce: (self: WatchdogObject, subject: Callback) -> Callback,
 	Bark: (self: WatchdogObject, ...any) -> (),
-	Sleep: (self: WatchdogObject) -> (),
+	Destroy: (self: WatchdogObject) -> (),
 }
 
 export type Watchdog = {
@@ -21,69 +23,60 @@ export type Watchdog = {
 local Watchdog = {}
 
 function Watchdog.new(): WatchdogObject
-	local observing: ObserveTable = {}
-	local isSleeping = false
-
-	local function observe(subject: Callback, observeOnce: boolean?)
-		local entity = {
-			getScared = subject,
-			getsScaredOnce = observeOnce,
-		}
-
-		local function stopObserving()
-			observing[entity] = nil
-		end
-
-		observing[entity] = stopObserving
-
-		return stopObserving
-	end
+	local entitiesToObserve: Entities = {}
 
 	local watchdog = {}
 	function watchdog:Observe(subject: Callback)
-		if isSleeping then
-			return
-		end
+		local entity = { getScared = subject }
+		local observing = true
 
-		return observe(subject)
+		entitiesToObserve[entity] = true
+
+		return function()
+			if not observing then
+				return
+			end
+
+			observing = false
+			entitiesToObserve[entity] = nil
+		end
 	end
 
 	function watchdog:ObserveOnce(subject: Callback)
-		if isSleeping then
-			return
-		end
+		local entity = { getScared = subject, getsScaredOnce = true }
+		local observing = true
 
-		return observe(subject, true)
+		entitiesToObserve[entity] = true
+
+		return function()
+			if not observing then
+				return
+			end
+
+			observing = false
+			entitiesToObserve[entity] = nil
+		end
 	end
 
 	function watchdog:Bark(...: any)
-		if isSleeping then
-			return
-		end
-
-		for entity, stopObserving in observing do
+		for entity in entitiesToObserve do
 			task.spawn(entity.getScared, ...)
 
 			if entity.getsScaredOnce then
-				stopObserving()
+				entitiesToObserve[entity] = nil
+
+				continue
 			end
 		end
 	end
 
-	function watchdog:Sleep()
-		if isSleeping then
-			return
+	function watchdog:Destroy()
+		for entity in entitiesToObserve do
+			entitiesToObserve[entity] = nil
 		end
-
-		for _, stopObserving in observing do
-			stopObserving()
-		end
-
-		observing = {}
-		isSleeping = true
 	end
 
 	return watchdog :: any
 end
 
-return Watchdog
+return Watchdog :: Watchdog
