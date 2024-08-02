@@ -1,11 +1,7 @@
-local Watchdog = require(script.Parent)
-
 return function()
-	local watchdog
+	local Watchdog = require(script.Parent)
 
-	beforeEach(function()
-		watchdog = Watchdog.new()
-	end)
+	local watchdog = Watchdog.new()
 
 	it("should observe subjects", function()
 		local MAX_SUBJECTS = 5
@@ -23,16 +19,38 @@ return function()
 	end)
 
 	it("should observe a subject only once", function()
-		local count = 0
+		local observeCount = 0
 		watchdog:ObserveOnce(function()
-			count += 1
+			observeCount += 1
 		end)
 
 		watchdog:Bark()
 		watchdog:Bark()
 		watchdog:Bark()
 
-		expect(count).to.equal(1)
+		expect(observeCount).to.equal(1)
+	end)
+
+	it("should stop observing a subject", function() 
+		local hasStoppedObserving = false
+
+		local stopObserving
+		stopObserving = watchdog:Observe(function() 
+			if hasStoppedObserving then
+				return
+			end
+
+			hasStoppedObserving = true
+
+			stopObserving()
+		end) 
+
+		expect(stopObserving).to.be.ok()
+		expect(stopObserving).to.be.a("function")
+		
+		watchdog:Bark()
+		
+		expect(hasStoppedObserving).to.equal(true)
 	end)
 
 	it("should scare subjects off with acidic saliva", function()
@@ -43,6 +61,9 @@ return function()
 		end)
 
 		watchdog:Bark("Hey", "You", "Stink", 9000, false)
+
+		expect(salivaContents).to.be.ok()
+		expect(salivaContents).to.be.a("table")
 
 		expect(salivaContents[1]).to.equal("Hey")
 		expect(salivaContents[2]).to.equal("You")
@@ -75,16 +96,20 @@ return function()
 		expect(wasBabyCScared).to.equal(false)
 	end)
 
-	it("shouldn't bark while sleeping", function()
-		local sleepCount = 0
+	it("shouldn't bark after being destroyed", function()
+		local isDestroyed = false
 		watchdog:Observe(function()
-			sleepCount += 1
+			if isDestroyed then
+				return
+			end
+
+			isDestroyed = true
 		end)
 
 		watchdog:Bark()
-		watchdog:Sleep()
+		watchdog:Destroy()
 		watchdog:Bark()
 
-		expect(sleepCount).to.equal(1)
+		expect(isDestroyed).to.equal(true)
 	end)
 end
