@@ -1,5 +1,6 @@
 [package]
 name = "tracyspells/watchdog"
+description = "An implementation of the Observer pattern in Roblox"
 version = "0.2.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
