@@ -1,4 +1,4 @@
-type Callback = (...any?) -> ()
+type Callback = (...any) -> ()
 
 type Entity = {
 	getScared: Callback,
@@ -10,8 +10,8 @@ type Set<T> = { [T]: boolean }
 type Entities = Set<Entity>
 
 type WatchdogObject = {
-	Observe: (self: WatchdogObject, subject: Callback) -> Callback,
-	ObserveOnce: (self: WatchdogObject, subject: Callback) -> Callback,
+	Observe: (self: WatchdogObject, entity: Callback) -> Callback,
+	ObserveOnce: (self: WatchdogObject, entity: Callback) -> Callback,
 	Bark: (self: WatchdogObject, ...any) -> (),
 	Destroy: (self: WatchdogObject) -> (),
 }
@@ -26,9 +26,9 @@ function Watchdog.new(): WatchdogObject
 	local entitiesToObserve: Entities = {}
 
 	local watchdog = {}
-	function watchdog:Observe(subject: Callback)
-		local entity = { getScared = subject }
+	function watchdog:Observe(callback)
 		local observing = true
+		local entity = { getScared = callback }
 
 		entitiesToObserve[entity] = true
 
@@ -42,8 +42,8 @@ function Watchdog.new(): WatchdogObject
 		end
 	end
 
-	function watchdog:ObserveOnce(subject: Callback)
-		local entity = { getScared = subject, getsScaredOnce = true }
+	function watchdog:ObserveOnce(callback)
+		local entity = { getScared = callback, getsScaredOnce = true }
 		local observing = true
 
 		entitiesToObserve[entity] = true
