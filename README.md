@@ -1,4 +1,7 @@
 <p align="center">
+<p align="center">
+	<img src="images/logo.svg" alt="Logo" width=50% height=50%>
+</p>
 <h1 align="center"> <b>Watchdog</b> </h1>
 <p align = "center">Simple Observer pattern for Roblox.</p>
 </p>
